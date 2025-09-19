@@ -40,6 +40,7 @@ class BandRepository:
         Es útil para registrar nuevas bandas en el sistema.
         """
         new_band = Band(name=name)
+        Band.
         self.db.add(new_band)
         self.db.commit()
         self.db.refresh(new_band)
