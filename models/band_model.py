@@ -7,10 +7,8 @@
 #   - declarative_base: Se utiliza para crear una clase base a partir de la cual se definen los modelos ORM.
 
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship, declarative_base
-
-
-Base = declarative_base()
+from sqlalchemy.orm import relationship
+from db import Base
 
 """
 La clase Band representa una banda musical dentro del sistema. Cada instancia de esta clase corresponde a una banda específica, 
