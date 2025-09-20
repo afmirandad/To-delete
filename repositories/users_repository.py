@@ -1,3 +1,6 @@
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 from models.users_model import User
 from sqlalchemy.orm import Session
 
@@ -19,6 +22,7 @@ class UserRepository:
         a la colección completa de usuarios.
         """
         #SELECT * FROM users;
+        logger.info("Obteniendo todos los usuarios desde el repositorio")
         return self.db.query(User).all()
 
     def get_user_by_id(self, user_id: int):
@@ -30,6 +34,7 @@ class UserRepository:
         Devuelve la instancia de User si existe, o None si no se encuentra.
         """
         #SELECT * FROM users WHERE id = user_id;
+        logger.info(f"Buscando usuario por ID: {user_id}")
         return self.db.query(User).filter(User.id == user_id).first()
 
     def create_user(self, username: str, password: str):
@@ -41,6 +46,7 @@ class UserRepository:
         Es útil para registrar nuevos usuarios en el sistema.
         """
         #INSERT INTO users (username, password) VALUES (username, password);
+        logger.info(f"Creando usuario: {username}")
         new_user = User(username=username, password=password)
         self.db.add(new_user)
         self.db.commit()
@@ -58,6 +64,7 @@ class UserRepository:
         """
         user = self.get_user_by_id(user_id)
         if user:
+            logger.info(f"Actualizando usuario: {user_id}")
             if username:
                 user.username = username
             if password:
@@ -65,6 +72,7 @@ class UserRepository:
             self.db.commit()
             self.db.refresh(user)
             return user
+        logger.warning(f"Usuario no encontrado para actualizar: {user_id}")
         return None
     
     def delete_user(self, user_id: int):
@@ -77,7 +85,9 @@ class UserRepository:
         """
         user = self.get_user_by_id(user_id)
         if user:
+            logger.info(f"Eliminando usuario: {user_id}")
             self.db.delete(user)
             self.db.commit()
             return user
+        logger.warning(f"Usuario no encontrado para eliminar: {user_id}")
         return None
