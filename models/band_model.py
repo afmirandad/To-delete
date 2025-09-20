@@ -8,7 +8,7 @@
 
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from db import Base
+from models.db import Base
 
 """
 La clase Band representa una banda musical dentro del sistema. Cada instancia de esta clase corresponde a una banda específica, 
