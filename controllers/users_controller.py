@@ -1,5 +1,6 @@
 from services.users_services import UsersService
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required
 
 from config.database import get_db_session
 
@@ -8,23 +9,24 @@ service = UsersService(get_db_session())
 user_bp = Blueprint('users', __name__)
 
 @user_bp.route('/login', methods=['POST'])
-def login_user():
+def login():
     """
     POST /login
-    Inicia sesión de un usuario.
+    Autentica a un usuario y retorna un token JWT si las credenciales son correctas.
     Parámetros esperados (JSON):
         username (str): Nombre de usuario.
         password (str): Contraseña del usuario.
-    Respuesta: JSON con los datos del usuario autenticado o 401 si falla.
+    Respuesta: JSON con el token JWT o mensaje de error si las credenciales son inválidas.
     """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
     if not username or not password:
         return jsonify({'error': 'El nombre de usuario y la contraseña son obligatorios'}), 400
-    user = service.login_user(username, password)
+    user = service.authenticate_user(username, password)
     if user:
-        return jsonify({'id': user.id, 'username': user.username}), 200
+        access_token = create_access_token(identity={'id': user.id, 'username': user.username})
+        return jsonify({'access_token': access_token}), 200
     return jsonify({'error': 'Credenciales inválidas'}), 401
 
 @user_bp.route('/users', methods=['GET'])
