@@ -1,3 +1,6 @@
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 from models.band_model import Band, Album
 from sqlalchemy.orm import Session
 
@@ -19,6 +22,7 @@ class BandRepository:
         mostrar catálogos, listados generales o para operaciones que requieran acceder
         a la colección completa de bandas.
         """
+        logger.info("Obteniendo todas las bandas desde el repositorio")
         return self.db.query(Band).all()
 
     def get_band_by_id(self, band_id: int):
@@ -29,6 +33,7 @@ class BandRepository:
         información o al realizar operaciones de actualización o eliminación.
         Devuelve la instancia de Band si existe, o None si no se encuentra.
         """
+        logger.info(f"Buscando banda por ID: {band_id}")
         return self.db.query(Band).filter(Band.id == band_id).first()
 
     def create_band(self, name: str):
@@ -39,6 +44,7 @@ class BandRepository:
         retorna la nueva banda creada, incluyendo su ID asignado automáticamente.
         Es útil para registrar nuevas bandas en el sistema.
         """
+        logger.info(f"Creando banda: {name}")
         new_band = Band(name=name)
         self.db.add(new_band)
         self.db.commit()
@@ -56,9 +62,12 @@ class BandRepository:
         """
         band = self.get_band_by_id(band_id)
         if band and name:
+            logger.info(f"Actualizando banda: {band_id}")
             band.name = name
             self.db.commit()
             self.db.refresh(band)
+        else:
+            logger.warning(f"Banda no encontrada para actualizar: {band_id}")
         return band
 
     def delete_band(self, band_id: int):
@@ -71,6 +80,9 @@ class BandRepository:
         """
         band = self.get_band_by_id(band_id)
         if band:
+            logger.info(f"Eliminando banda: {band_id}")
             self.db.delete(band)
             self.db.commit()
+        else:
+            logger.warning(f"Banda no encontrada para eliminar: {band_id}")
         return band

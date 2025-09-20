@@ -42,7 +42,7 @@ def login():
         return jsonify({'error': 'El nombre de usuario y la contrasena son obligatorios'}), 400, {'Content-Type': 'application/json; charset=utf-8'}
     user = service.authenticate_user(username, password)
     if user:
-        access_token = create_access_token(identity={'id': user.id, 'username': user.username})
+        access_token = create_access_token(identity=str(user.id))
         logger.info(f"Usuario autenticado: {username}")
         return jsonify({'access_token': access_token}), 200, {'Content-Type': 'application/json; charset=utf-8'}
     logger.warning(f"Login fallido para usuario: {username}")

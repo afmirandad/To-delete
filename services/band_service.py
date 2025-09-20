@@ -1,3 +1,6 @@
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 from repositories.band_repository import BandRepository
 from models.band_model import Band
 from sqlalchemy.orm import Session
@@ -20,6 +23,7 @@ class BandService:
         Inicializa el servicio de bandas con una sesión de base de datos y un repositorio de bandas.
         """
         self.repository = BandRepository(db_session)
+        logger.info("Servicio de bandas inicializado")
 
     def listar_bandas(self):
         """
@@ -27,6 +31,7 @@ class BandService:
         Utiliza el repositorio para obtener la lista completa de bandas.
         Es útil para mostrar catálogos o listados generales de bandas.
         """
+        logger.info("Listando todas las bandas")
         return self.repository.get_all_bands()
 
     def obtener_banda(self, band_id: int):
@@ -35,6 +40,7 @@ class BandService:
         Utiliza el repositorio para acceder a la banda correspondiente.
         Es útil para mostrar detalles o realizar operaciones sobre una banda concreta.
         """
+        logger.info(f"Obteniendo banda por ID: {band_id}")
         return self.repository.get_band_by_id(band_id)
 
     def crear_banda(self, name: str):
@@ -43,6 +49,7 @@ class BandService:
         Utiliza el repositorio para almacenar la nueva banda en la base de datos.
         Es útil para registrar nuevas bandas en el sistema.
         """
+        logger.info(f"Creando banda: {name}")
         return self.repository.create_band(name)
 
     def actualizar_banda(self, band_id: int, name: str = None):
@@ -51,6 +58,7 @@ class BandService:
         Utiliza el repositorio para realizar la actualización en la base de datos.
         Es útil para mantener actualizada la información de las bandas.
         """
+        logger.info(f"Actualizando banda: {band_id}")
         return self.repository.update_band(band_id, name)
 
     def eliminar_banda(self, band_id: int):
@@ -59,4 +67,5 @@ class BandService:
         Utiliza el repositorio para eliminar la banda de la base de datos.
         Es útil para operaciones administrativas o de mantenimiento.
         """
+        logger.info(f"Eliminando banda: {band_id}")
         return self.repository.delete_band(band_id)

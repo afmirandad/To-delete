@@ -1,3 +1,6 @@
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from flask import Blueprint, request, jsonify
 from services.band_service import BandService
@@ -23,8 +26,9 @@ def get_bands():
 	No recibe parámetros.
 	Respuesta: JSON con la lista de bandas.
 	"""
+	logger.info("Consulta de todas las bandas")
 	bands = service.listar_bandas()
-	return jsonify([{'id': b.id, 'name': b.name} for b in bands]), 200
+	return jsonify([{'id': b.id, 'name': b.name} for b in bands]), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 
@@ -39,8 +43,10 @@ def get_band(band_id):
 	"""
 	band = service.obtener_banda(band_id)
 	if band:
-		return jsonify({'id': band.id, 'name': band.name}), 200
-	return jsonify({'error': 'Banda no encontrada'}), 404
+		logger.info(f"Consulta de banda por ID: {band_id}")
+		return jsonify({'id': band.id, 'name': band.name}), 200, {'Content-Type': 'application/json; charset=utf-8'}
+	logger.warning(f"Banda no encontrada: {band_id}")
+	return jsonify({'error': 'Banda no encontrada'}), 404, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 
@@ -56,9 +62,11 @@ def create_band():
 	data = request.get_json()
 	name = data.get('name')
 	if not name:
-		return jsonify({'error': 'El nombre es obligatorio'}), 400
+		logger.warning("Intento de crear banda sin nombre")
+		return jsonify({'error': 'El nombre es obligatorio'}), 400, {'Content-Type': 'application/json; charset=utf-8'}
 	band = service.crear_banda(name)
-	return jsonify({'id': band.id, 'name': band.name}), 201
+	logger.info(f"Banda creada: {name}")
+	return jsonify({'id': band.id, 'name': band.name}), 201, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 
@@ -76,8 +84,10 @@ def update_band(band_id):
 	name = data.get('name')
 	band = service.actualizar_banda(band_id, name)
 	if band:
-		return jsonify({'id': band.id, 'name': band.name}), 200
-	return jsonify({'error': 'Banda no encontrada'}), 404
+		logger.info(f"Banda actualizada: {band_id}")
+		return jsonify({'id': band.id, 'name': band.name}), 200, {'Content-Type': 'application/json; charset=utf-8'}
+	logger.warning(f"Banda no encontrada para actualizar: {band_id}")
+	return jsonify({'error': 'Banda no encontrada'}), 404, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 
@@ -92,5 +102,7 @@ def delete_band(band_id):
 	"""
 	band = service.eliminar_banda(band_id)
 	if band:
-		return jsonify({'message': 'Banda eliminada'}), 200
-	return jsonify({'error': 'Banda no encontrada'}), 404
+		logger.info(f"Banda eliminada: {band_id}")
+		return jsonify({'message': 'Banda eliminada'}), 200, {'Content-Type': 'application/json; charset=utf-8'}
+	logger.warning(f"Banda no encontrada para eliminar: {band_id}")
+	return jsonify({'error': 'Banda no encontrada'}), 404, {'Content-Type': 'application/json; charset=utf-8'}
