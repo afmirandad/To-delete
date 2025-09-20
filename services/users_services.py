@@ -1,4 +1,4 @@
-from repositories.users_repository import UsersRepository
+from repositories.users_repository import UserRepository
 from models.users_model import User
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging
@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class UsersService:
     def __init__(self, db_session):
-        self.users_repository = UsersRepository(db_session)
+        self.users_repository = UserRepository(db_session)
 
     def authenticate_user(self, username: str, password: str):
         user = self.users_repository.db.query(User).filter(User.username == username).first()

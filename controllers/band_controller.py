@@ -1,6 +1,7 @@
 
 from flask import Blueprint, request, jsonify
 from services.band_service import BandService
+from flask_jwt_extended import jwt_required
 band_bp =Blueprint('band_bp',__name__)
 
 # Importar la sesión de la base de datos desde config/database.py
@@ -13,6 +14,7 @@ band_bp =Blueprint('band_bp',__name__)
 
 
 @band_bp.route('/bands', methods=['GET'])
+@jwt_required()
 def get_bands():
 	"""
 	GET /bands
