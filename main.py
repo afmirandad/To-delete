@@ -13,6 +13,7 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = JWT_ACCESS_TOKEN_EXPIRES
 app.config['JWT_HEADER_NAME'] = JWT_HEADER_NAME
 app.config['JWT_HEADER_TYPE'] = JWT_HEADER_TYPE
 
+jwt = JWTManager(app)
 
 # Registrar el blueprint de bandas
 app.register_blueprint(band_bp)
