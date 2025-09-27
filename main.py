@@ -2,7 +2,7 @@ from flask import Flask
 from config.jwt import *
 from controllers.band_controller import band_bp
 from controllers.users_controller import user_bp, register_jwt_error_handlers
-
+from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
 
